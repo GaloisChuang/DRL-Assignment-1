@@ -2,10 +2,9 @@ import gym
 import numpy as np
 import importlib.util
 import time
-from IPython.display import clear_output
 import random
 # This environment allows you to verify whether your program runs correctly during testing, 
-# as it follows the same observation format from `env.reset()` and `env.step()`. 
+# as it follows the same observation format from env.reset() and env.step(). 
 # However, keep in mind that this is just a simplified environment. 
 # The full specifications for the real testing environment can be found in the provided spec.
 # 
@@ -14,20 +13,43 @@ import random
 
 
 class SimpleTaxiEnv():
-    def __init__(self, grid_size=5, fuel_limit=50):
+    def __init__(self, fuel_limit=5000):
         """
         Custom Taxi environment supporting different grid sizes.
         """
+
+        grid_size = random.choice([5, 6, 7, 8, 9, 10])
+
         self.grid_size = grid_size
         self.fuel_limit = fuel_limit
         self.current_fuel = fuel_limit
         self.passenger_picked_up = False
         
-        self.stations = [(0, 0), (0, self.grid_size - 1), (self.grid_size - 1, 0), (self.grid_size - 1, self.grid_size - 1)]
+        all_pos = set([(i, j) for i in range(grid_size) for j in range(grid_size)])
+
+        # Randomly choose 4 positions for stations which are not adjacent to each other, randomly choose another two positions for passengers and destinations, and choose 0.1 of the positions as obstacles
+        def adjacent_pos(pos):
+            x, y = pos
+            return [(x-1, y), (x+1, y), (x, y-1), (x, y+1)]
+
+        number_of_obstacles = int(grid_size**2 * 0.1)
+        self.obstacles = random.sample(list(all_pos), number_of_obstacles)
+        all_pos -= set(self.obstacles)
+
+        all_station = []
+        for i in range(4):
+            station = random.choice(list(all_pos))
+            all_pos.remove(station)
+            adj_block = adjacent_pos(station)
+            for block in adj_block:
+                all_pos.discard(block)
+            all_station.append(station)
+        self.stations = all_station
+
+        self.taxi_pos = None
         self.passenger_loc = None
-       
-        self.obstacles = set()  # No obstacles in simple version
         self.destination = None
+
 
     def reset(self):
         """Reset the environment, ensuring Taxi, passenger, and destination are not overlapping obstacles"""
@@ -129,29 +151,29 @@ class SimpleTaxiEnv():
         
         state = (taxi_row, taxi_col, self.stations[0][0],self.stations[0][1] ,self.stations[1][0],self.stations[1][1],self.stations[2][0],self.stations[2][1],self.stations[3][0],self.stations[3][1],obstacle_north, obstacle_south, obstacle_east, obstacle_west, passenger_look, destination_look)
         return state
+    
     def render_env(self, taxi_pos,   action=None, step=None, fuel=None):
-        clear_output(wait=True)
+        # clear_output(wait=True)
 
         grid = [['.'] * self.grid_size for _ in range(self.grid_size)]
         
-        '''
+        # Place the stations
+        color = ['R', 'G', 'Y', 'B']
+        for i, station in enumerate(self.stations):
+            sy, sx = station
+            if 0 <= sx < self.grid_size and 0 <= sy < self.grid_size:
+                grid[sy][sx] = color[i]
+
         # Place passenger
-        py, px = passenger_pos
+        py, px = self.passenger_loc
         if 0 <= px < self.grid_size and 0 <= py < self.grid_size:
             grid[py][px] = 'P'
-        '''
         
-        
-        grid[0][0]='R'
-        grid[0][4]='G'
-        grid[4][0]='Y'
-        grid[4][4]='B'
-        '''
         # Place destination
-        dy, dx = destination_pos
+        dy, dx = self.destination
         if 0 <= dx < self.grid_size and 0 <= dy < self.grid_size:
             grid[dy][dx] = 'D'
-        '''
+        
         # Place taxi
         ty, tx = taxi_pos
         if 0 <= tx < self.grid_size and 0 <= ty < self.grid_size:
@@ -160,8 +182,8 @@ class SimpleTaxiEnv():
         # Print step info
         print(f"\nStep: {step}")
         print(f"Taxi Position: ({tx}, {ty})")
-        #print(f"Passenger Position: ({px}, {py}) {'(In Taxi)' if (px, py) == (tx, ty) else ''}")
-        #print(f"Destination: ({dx}, {dy})")
+        print(f"Passenger Position: ({px}, {py}) {'(In Taxi)' if (px, py) == (tx, ty) else ''}")
+        print(f"Destination: ({dx}, {dy})")
         print(f"Fuel Left: {fuel}")
         print(f"Last Action: {self.get_action_name(action)}\n")
 
@@ -186,7 +208,6 @@ def run_agent(agent_file, env_config, render=False):
     total_reward = 0
     done = False
     step_count = 0
-    stations = [(0, 0), (0, 4), (4, 0), (4,4)]
     
     taxi_row, taxi_col, _,_,_,_,_,_,_,_,obstacle_north, obstacle_south, obstacle_east, obstacle_west, passenger_look, destination_look = obs
 
@@ -200,7 +221,7 @@ def run_agent(agent_file, env_config, render=False):
         action = student_agent.get_action(obs)
 
         obs, reward, done, _ = env.step(action)
-        print('obs=',obs)
+        # print('obs=',obs)
         total_reward += reward
         step_count += 1
 
@@ -218,5 +239,5 @@ if __name__ == "__main__":
         "fuel_limit": 5000
     }
     
-    agent_score = run_agent("student_agent.py", env_config, render=True)
+    agent_score = run_agent("student_agent.py", env_config)
     print(f"Final Score: {agent_score}")
