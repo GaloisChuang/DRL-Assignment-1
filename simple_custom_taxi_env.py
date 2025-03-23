@@ -90,7 +90,7 @@ class SimpleTaxiEnv():
         
         if action in [0, 1, 2, 3]:  # Only movement actions should be checked
             if (next_row, next_col) in self.obstacles or not (0 <= next_row < self.grid_size and 0 <= next_col < self.grid_size):
-                reward -= 5
+                reward -=5
             else:
                 self.taxi_pos = (next_row, next_col)
                 if self.passenger_picked_up:
@@ -153,10 +153,16 @@ class SimpleTaxiEnv():
         state = (taxi_row, taxi_col, self.stations[0][0],self.stations[0][1] ,self.stations[1][0],self.stations[1][1],self.stations[2][0],self.stations[2][1],self.stations[3][0],self.stations[3][1],obstacle_north, obstacle_south, obstacle_east, obstacle_west, passenger_look, destination_look)
         return state
     
-    def render_env(self, taxi_pos,   action=None, step=None, fuel=None):
+    def render_env(self, taxi_pos, action=None, step=None, fuel=None):
         # clear_output(wait=True)
 
         grid = [['.'] * self.grid_size for _ in range(self.grid_size)]
+        
+        # Place obstacles with "B"
+        for obs in self.obstacles:
+            oy, ox = obs
+            if 0 <= ox < self.grid_size and 0 <= oy < self.grid_size:
+                grid[oy][ox] = 'B'
         
         # Place the stations
         color = ['R', 'G', 'Y', 'B']
@@ -164,7 +170,7 @@ class SimpleTaxiEnv():
             sy, sx = station
             if 0 <= sx < self.grid_size and 0 <= sy < self.grid_size:
                 grid[sy][sx] = color[i]
-
+        
         # Place passenger
         py, px = self.passenger_loc
         if 0 <= px < self.grid_size and 0 <= py < self.grid_size:
@@ -179,7 +185,7 @@ class SimpleTaxiEnv():
         ty, tx = taxi_pos
         if 0 <= tx < self.grid_size and 0 <= ty < self.grid_size:
             grid[ty][tx] = '🚖'
-
+        
         # Print step info
         print(f"\nStep: {step}")
         print(f"Taxi Position: ({tx}, {ty})")
@@ -187,7 +193,7 @@ class SimpleTaxiEnv():
         print(f"Destination: ({dx}, {dy})")
         print(f"Fuel Left: {fuel}")
         print(f"Last Action: {self.get_action_name(action)}\n")
-
+        
         # Print grid
         for row in grid:
             print(" ".join(row))
