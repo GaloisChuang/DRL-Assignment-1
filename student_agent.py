@@ -108,6 +108,7 @@ def get_action(obs):
         action = np.argmax(q_table[state])
     globals.prev_taxi_pos = taxi_pos
     globals.prev_action = action
+    print(f"Action: {action}")
     return action
     # You can submit this random agent to evaluate the performance of a purely random strategy.
 
