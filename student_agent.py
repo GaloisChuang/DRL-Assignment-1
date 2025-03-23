@@ -99,7 +99,7 @@ def get_action(obs):
                     relative_goal_pos = (goal[0] - taxi_row, goal[1] - taxi_col)
                     state = ( obstacle_south, obstacle_north, obstacle_east, obstacle_west, relative_goal_pos[0], relative_goal_pos[1], globals.has_passenger)
     
-    if globals.fuel < 4800:
+    if globals.fuel < 4750:
         q_table = globals.lazy_q_table
         if state not in q_table:
             action = random.randint(0, 5)
