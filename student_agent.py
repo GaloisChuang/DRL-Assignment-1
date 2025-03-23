@@ -67,11 +67,6 @@ def get_action(obs):
                     globals.goal = goal
                     relative_goal_pos = (goal[0] - taxi_row, goal[1] - taxi_col)
                     state = ( obstacle_south, obstacle_north, obstacle_east, obstacle_west, relative_goal_pos[0], relative_goal_pos[1])
-            # elif len(globals.possible_passenger) == 0:
-            #     goal = find_nearest_station(taxi_pos, list(globals.possible_destination))
-            #     globals.goal = goal
-            #     relative_goal_pos = (goal[0] - taxi_row, goal[1] - taxi_col)
-            #     state = ( obstacle_south, obstacle_north, obstacle_east, obstacle_west, relative_goal_pos[0], relative_goal_pos[1])
             else:
                 if globals.goal in globals.possible_passenger:
                     goal = globals.goal
@@ -108,7 +103,14 @@ def get_action(obs):
         action = np.argmax(q_table[state])
     globals.prev_taxi_pos = taxi_pos
     globals.prev_action = action
-    print(f"Action: {action}")
+    # print(f"Action: {action}")
+    if globals.has_passenger and len(globals.possible_destination) == 1 and taxi_pos in globals.possible_destination and action == 5:
+        globals.goal = None
+        globals.possible_passenger = set()
+        globals.possible_destination = set()
+        globals.has_passenger = False
+        globals.prev_taxi_pos = None
+        globals.prev_action = None
     return action
     # You can submit this random agent to evaluate the performance of a purely random strategy.
 
