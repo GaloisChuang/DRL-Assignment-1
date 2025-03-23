@@ -2,7 +2,7 @@ import gym
 import numpy as np
 import importlib.util
 import time
-from IPython.display import clear_output
+# from IPython.display import clear_output
 import random
 import globals
 # This environment allows you to verify whether your program runs correctly during testing, 
