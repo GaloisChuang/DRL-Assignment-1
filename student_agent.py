@@ -36,8 +36,6 @@ def get_action(obs):
         relative_goal_pos = (goal[0] - taxi_pos[0], goal[1] - taxi_pos[1])
         state = ( obstacle_south, obstacle_north, obstacle_east, obstacle_west, relative_goal_pos[0], relative_goal_pos[1])
     else:
-        taxi_row, taxi_col, _,_,_,_,_,_,_,_,obstacle_north, obstacle_south, obstacle_east, obstacle_west, passenger_look, destination_look = obs
-
         taxi_pos = (taxi_row, taxi_col)
         prev_taxi_pos = globals.prev_taxi_pos
 
@@ -53,6 +51,8 @@ def get_action(obs):
         else:
             globals.possible_destination.difference_update(adjacent)
 
+        print(f"Goal Pos: {globals.goal}, Possible Passenger: {globals.possible_passenger}, Possible Destination: {globals.possible_destination}, Has Passenger: {globals.has_passenger}")
+
         if globals.has_passenger == False:
             if len(globals.possible_passenger) == 1:
                 if prev_taxi_pos in globals.possible_passenger and globals.prev_action == 4:
@@ -67,11 +67,11 @@ def get_action(obs):
                     globals.goal = goal
                     relative_goal_pos = (goal[0] - taxi_row, goal[1] - taxi_col)
                     state = ( obstacle_south, obstacle_north, obstacle_east, obstacle_west, relative_goal_pos[0], relative_goal_pos[1])
-            elif len(globals.possible_passenger) == 0:
-                goal = find_nearest_station(taxi_pos, list(globals.possible_destination))
-                globals.goal = goal
-                relative_goal_pos = (goal[0] - taxi_row, goal[1] - taxi_col)
-                state = ( obstacle_south, obstacle_north, obstacle_east, obstacle_west, relative_goal_pos[0], relative_goal_pos[1])
+            # elif len(globals.possible_passenger) == 0:
+            #     goal = find_nearest_station(taxi_pos, list(globals.possible_destination))
+            #     globals.goal = goal
+            #     relative_goal_pos = (goal[0] - taxi_row, goal[1] - taxi_col)
+            #     state = ( obstacle_south, obstacle_north, obstacle_east, obstacle_west, relative_goal_pos[0], relative_goal_pos[1])
             else:
                 if globals.goal in globals.possible_passenger:
                     goal = globals.goal
