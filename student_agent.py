@@ -98,11 +98,17 @@ def get_action(obs):
                     globals.goal = goal
                     relative_goal_pos = (goal[0] - taxi_row, goal[1] - taxi_col)
                     state = ( obstacle_south, obstacle_north, obstacle_east, obstacle_west, relative_goal_pos[0], relative_goal_pos[1], globals.has_passenger)
-    q_table = globals.q_table
+    
+    if globals.fuel < 3500:
+        q_table = globals.lazy_q_table
+    else:
+        q_table = globals.q_table
+        
     if state not in q_table or random.uniform(0, 1) < 0.1:
         action = random.randint(0, 5)
     else:
         action = np.argmax(q_table[state])
+
     globals.prev_taxi_pos = taxi_pos
     globals.prev_action = action
     # print(f"Action: {action}")
