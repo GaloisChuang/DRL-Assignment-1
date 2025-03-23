@@ -67,11 +67,11 @@ def get_action(obs):
                     globals.goal = goal
                     relative_goal_pos = (goal[0] - taxi_row, goal[1] - taxi_col)
                     state = ( obstacle_south, obstacle_north, obstacle_east, obstacle_west, relative_goal_pos[0], relative_goal_pos[1])
-            elif len(globals.possible_passenger) == 0:
-                goal = find_nearest_station(taxi_pos, list(globals.possible_destination))
-                globals.goal = goal
-                relative_goal_pos = (goal[0] - taxi_row, goal[1] - taxi_col)
-                state = ( obstacle_south, obstacle_north, obstacle_east, obstacle_west, relative_goal_pos[0], relative_goal_pos[1])
+            # elif len(globals.possible_passenger) == 0:
+            #     goal = find_nearest_station(taxi_pos, list(globals.possible_destination))
+            #     globals.goal = goal
+            #     relative_goal_pos = (goal[0] - taxi_row, goal[1] - taxi_col)
+            #     state = ( obstacle_south, obstacle_north, obstacle_east, obstacle_west, relative_goal_pos[0], relative_goal_pos[1])
             else:
                 if globals.goal in globals.possible_passenger:
                     goal = globals.goal
