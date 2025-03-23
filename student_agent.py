@@ -67,6 +67,11 @@ def get_action(obs):
                     globals.goal = goal
                     relative_goal_pos = (goal[0] - taxi_row, goal[1] - taxi_col)
                     state = ( obstacle_south, obstacle_north, obstacle_east, obstacle_west, relative_goal_pos[0], relative_goal_pos[1])
+            elif len(globals.possible_passenger) == 0:
+                goal = find_nearest_station(taxi_pos, list(globals.possible_destination))
+                globals.goal = goal
+                relative_goal_pos = (goal[0] - taxi_row, goal[1] - taxi_col)
+                state = ( obstacle_south, obstacle_north, obstacle_east, obstacle_west, relative_goal_pos[0], relative_goal_pos[1])
             else:
                 if globals.goal in globals.possible_passenger:
                     goal = globals.goal
@@ -96,6 +101,16 @@ def get_action(obs):
                     globals.goal = goal
                     relative_goal_pos = (goal[0] - taxi_row, goal[1] - taxi_col)
                     state = ( obstacle_south, obstacle_north, obstacle_east, obstacle_west, relative_goal_pos[0], relative_goal_pos[1])
+    q_table = globals.q_table
+    if state not in q_table or random.uniform(0, 1) < 0.1:
+        action = random.randint(0, 5)
+    else:
+        action = np.argmax(q_table[state])
+    globals.prev_taxi_pos = taxi_pos
+    globals.prev_action = action
+    return action
+    # You can submit this random agent to evaluate the performance of a purely random strategy.
+
 
 # def get_action(obs):
     
@@ -180,12 +195,3 @@ def get_action(obs):
 
     
     # print(f"Goal Pos: {goal}, Possible Passenger: {globals.possible_passenger}, Possible Destination: {globals.possible_destination}, Has Passenger: {globals.has_passenger}")
-    q_table = globals.q_table
-    if state not in q_table or random.uniform(0, 1) < 0.1:
-        action = random.randint(0, 5)
-    else:
-        action = np.argmax(q_table[state])
-    globals.prev_taxi_pos = taxi_pos
-    globals.prev_action = action
-    return action
-    # You can submit this random agent to evaluate the performance of a purely random strategy.
