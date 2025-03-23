@@ -24,6 +24,8 @@ def get_action(obs):
     #       To prevent crashes, implement a fallback strategy for missing keys. 
     #       Otherwise, even if your agent performs well in training, it may fail during testing.
 
+    globals.fuel -= 1
+
     taxi_row, taxi_col, R_x, R_y, G_x, G_y, Y_x, Y_y, B_x, B_y, obstacle_north, obstacle_south, obstacle_east, obstacle_west, passenger_look, destination_look = obs
     if globals.goal is None:
         station = [(R_x, R_y), (G_x, G_y), (Y_x, Y_y), (B_x, B_y)]
@@ -104,6 +106,15 @@ def get_action(obs):
     globals.prev_taxi_pos = taxi_pos
     globals.prev_action = action
     # print(f"Action: {action}")
+
+    if globals.fuel == 0:
+        globals.goal = None
+        globals.possible_passenger = set()
+        globals.possible_destination = set()
+        globals.has_passenger = False
+        globals.prev_taxi_pos = None
+        globals.prev_action = None
+        globals.fuel = 5000
     if globals.has_passenger and len(globals.possible_destination) == 1 and taxi_pos in globals.possible_destination and action == 5:
         globals.goal = None
         globals.possible_passenger = set()
@@ -111,6 +122,7 @@ def get_action(obs):
         globals.has_passenger = False
         globals.prev_taxi_pos = None
         globals.prev_action = None
+        globals.fuel = 5000
     return action
     # You can submit this random agent to evaluate the performance of a purely random strategy.
 
