@@ -4,7 +4,6 @@ import importlib.util
 import time
 from IPython.display import clear_output
 import random
-import globals
 # This environment allows you to verify whether your program runs correctly during testing, 
 # as it follows the same observation format from env.reset() and env.step(). 
 # However, keep in mind that this is just a simplified environment. 
@@ -223,7 +222,7 @@ def run_agent(agent_file, env_config, render=False):
         action = student_agent.get_action(obs)
 
         obs, reward, done, _ = env.step(action)
-        print(f"Goal: {globals.goal}, Possible Passenger: {globals.possible_passenger}, Possible Destination: {globals.possible_destination}, Has Passenger: {globals.has_passenger}")
+        # print(f"Goal: {globals.goal}, Possible Passenger: {globals.possible_passenger}, Possible Destination: {globals.possible_destination}, Has Passenger: {globals.has_passenger}")
         total_reward += reward
         step_count += 1
 
