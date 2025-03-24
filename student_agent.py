@@ -53,7 +53,7 @@ def get_action(obs):
         else:
             globals.possible_destination.difference_update(adjacent)
 
-        print(f"Goal Pos: {globals.goal}, Possible Passenger: {globals.possible_passenger}, Possible Destination: {globals.possible_destination}, Has Passenger: {globals.has_passenger}")
+        # print(f"Goal Pos: {globals.goal}, Possible Passenger: {globals.possible_passenger}, Possible Destination: {globals.possible_destination}, Has Passenger: {globals.has_passenger}")
 
         if globals.has_passenger == False:
             if len(globals.possible_passenger) == 1:
@@ -100,11 +100,16 @@ def get_action(obs):
                     state = ( obstacle_south, obstacle_north, obstacle_east, obstacle_west, relative_goal_pos[0], relative_goal_pos[1], globals.has_passenger)
     
     if globals.fuel < 5000:
-        q_table = globals.lazy_q_table
-        if state not in q_table:
+        # q_table = globals.lazy_q_table
+        # if state not in q_table:
+        #     action = random.randint(0, 5)
+        # else:
+        #     action = np.argmax(q_table[state])
+        simple_state = (obstacle_south, obstacle_north, obstacle_east, obstacle_west)
+        if simple_state not in globals.simple_q_table:
             action = random.randint(0, 5)
         else:
-            action = np.argmax(q_table[state])
+            action = np.argmax(globals.simple_q_table[simple_state])
     # else:
     #     q_table = globals.q_table
     #     if state not in q_table or random.uniform(0, 1) < 0.1:

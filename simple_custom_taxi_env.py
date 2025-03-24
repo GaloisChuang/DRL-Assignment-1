@@ -118,7 +118,7 @@ class SimpleTaxiEnv():
 
         self.current_fuel -= 1
         if self.current_fuel <= 0:
-            return self.get_state(), reward -10, True, {}
+            return self.get_state(), reward - 10, True, {}
 
         
 
@@ -246,5 +246,5 @@ if __name__ == "__main__":
         "fuel_limit": 5000
     }
     
-    agent_score = run_agent("student_agent.py", env_config, render=True)
+    agent_score = run_agent("student_agent.py", env_config, render=False)
     print(f"Final Score: {agent_score}")
