@@ -53,7 +53,7 @@ def get_action(obs):
         else:
             globals.possible_destination.difference_update(adjacent)
 
-        # print(f"Goal Pos: {globals.goal}, Possible Passenger: {globals.possible_passenger}, Possible Destination: {globals.possible_destination}, Has Passenger: {globals.has_passenger}")
+        print(f"Goal Pos: {globals.goal}, Possible Passenger: {globals.possible_passenger}, Possible Destination: {globals.possible_destination}, Has Passenger: {globals.has_passenger}")
 
         if globals.has_passenger == False:
             if len(globals.possible_passenger) == 1:
