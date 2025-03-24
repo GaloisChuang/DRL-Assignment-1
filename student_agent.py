@@ -27,7 +27,7 @@ def get_action(obs):
     globals.fuel -= 1
 
     taxi_row, taxi_col, R_x, R_y, G_x, G_y, Y_x, Y_y, B_x, B_y, obstacle_north, obstacle_south, obstacle_east, obstacle_west, passenger_look, destination_look = obs
-    if globals.goal is None:
+    if globals.fuel == 4999:
         station = [(R_x, R_y), (G_x, G_y), (Y_x, Y_y), (B_x, B_y)]
         goal = find_nearest_station((taxi_row, taxi_col), station)
         globals.goal = goal
@@ -37,6 +37,7 @@ def get_action(obs):
         taxi_pos = (taxi_row, taxi_col)
         relative_goal_pos = (goal[0] - taxi_pos[0], goal[1] - taxi_pos[1])
         state = ( obstacle_south, obstacle_north, obstacle_east, obstacle_west, relative_goal_pos[0], relative_goal_pos[1], globals.has_passenger)
+        # print(f"Goal Pos: {globals.goal}, Possible Passenger: {globals.possible_passenger}, Possible Destination: {globals.possible_destination}, Has Passenger: {globals.has_passenger}")
     else:
         taxi_pos = (taxi_row, taxi_col)
         prev_taxi_pos = globals.prev_taxi_pos
@@ -99,7 +100,7 @@ def get_action(obs):
                     relative_goal_pos = (goal[0] - taxi_row, goal[1] - taxi_col)
                     state = ( obstacle_south, obstacle_north, obstacle_east, obstacle_west, relative_goal_pos[0], relative_goal_pos[1], globals.has_passenger)
     
-    if globals.fuel < 4800:
+    if globals.fuel in range(4850, 4950) or globals.fuel < 4800:
         simple_state = (obstacle_south, obstacle_north, obstacle_east, obstacle_west)
         if simple_state not in globals.simple_q_table:
             action = random.randint(0, 5)
@@ -118,6 +119,7 @@ def get_action(obs):
     # print(f"Action: {action}")
 
     if globals.fuel == 0:
+        # print(f"Goal Pos: {globals.goal}, Possible Passenger: {globals.possible_passenger}, Possible Destination: {globals.possible_destination}, Has Passenger: {globals.has_passenger}")
         globals.goal = None
         globals.possible_passenger = set()
         globals.possible_destination = set()
@@ -126,6 +128,7 @@ def get_action(obs):
         globals.prev_action = None
         globals.fuel = 5000
     if globals.has_passenger and len(globals.possible_destination) == 1 and taxi_pos in globals.possible_destination and action == 5:
+        # print(f"Goal Pos: {globals.goal}, Possible Passenger: {globals.possible_passenger}, Possible Destination: {globals.possible_destination}, Has Passenger: {globals.has_passenger}")
         globals.goal = None
         globals.possible_passenger = set()
         globals.possible_destination = set()

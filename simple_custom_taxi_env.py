@@ -241,10 +241,15 @@ def run_agent(agent_file, env_config, render=False):
     print(f"Agent Finished in {step_count} steps, Score: {total_reward}")
     return total_reward
 
-if __name__ == "__main__":
-    env_config = {
-        "fuel_limit": 5000
-    }
-    
-    agent_score = run_agent("student_agent.py", env_config, render=True)
-    print(f"Final Score: {agent_score}")
+scores = []
+for i in range(50):
+    if __name__ == "__main__":
+        env_config = {
+            "fuel_limit": 5000
+        }
+        
+        agent_score = run_agent("student_agent.py", env_config, render=False)
+        scores.append(agent_score)
+        print(f"Final Score: {agent_score}")
+
+print(f"Average Score: {np.mean(scores)}, Number of Negative Scores: {sum([1 for s in scores if s < 0])}")
